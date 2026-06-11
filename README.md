@@ -24,9 +24,93 @@ uv run --extra dev python -m pytest tests/test_gui_state.py -q
 See `docs/windows-setup.md` for Docker Desktop, Ollama, local model warmup,
 rembg/U2-Net cache notes, troubleshooting, and the packaging path.
 
-## Current Limitations
+## Korean Run Guide
 
-Windows installer is not built yet. The current packaging path is documented as
-a PyInstaller plan, not a verified installer release.
+### 1. 준비
 
-The implementation is tracked in `.omo/plans/image-jakdu-image-splitter.md`.
+Windows 10 또는 Windows 11에서 PowerShell을 열고 프로젝트 폴더로 이동합니다.
+
+```powershell
+cd C:\path\to\image-jakdu
+```
+
+필요한 도구:
+
+- Python 3.11 이상
+- `uv`
+- Docker Desktop: 로컬 LLM을 사용할 때 필요
+
+### 2. 의존성 확인
+
+아래 명령으로 개발 의존성을 설치하고 테스트까지 확인합니다.
+
+```powershell
+uv run --extra dev python -m pytest -q
+uv run --extra dev python -m ruff check .
+uv run --extra dev python -m basedpyright
+uv run --extra dev python -m pyright
+```
+
+### 3. 로컬 LLM 실행
+
+사용자 의도를 한국어 또는 영어로 입력받아 구조화하려면 Ollama 컨테이너를 먼저
+실행합니다.
+
+```powershell
+docker compose up -d ollama
+docker exec -it image-jakdu-ollama-1 ollama pull qwen2.5:1.5b-instruct
+```
+
+LLM 없이도 수동 모드로 이미지 경로, 저장 폴더, 가로 분할 수, 세로 분할 수를
+직접 지정해서 사용할 수 있습니다.
+
+### 4. GUI 실행
+
+현재는 완성된 Windows 설치 파일이 아니라 개발 실행 방식입니다. 실제 데스크톱
+환경에서는 `QT_QPA_PLATFORM=offscreen`을 설정하지 마세요.
+
+```powershell
+uv run --extra dev python -c "from PySide6.QtWidgets import QApplication; from image_jakdu.gui import ImageJakduWindow; app = QApplication([]); window = ImageJakduWindow(); window.show(); raise SystemExit(app.exec())"
+```
+
+GUI에서 할 일:
+
+1. `Select images`로 자를 이미지 파일을 선택합니다.
+2. `Select output folder`로 결과 이미지가 저장될 폴더를 선택합니다.
+3. 모드를 선택합니다.
+   - `Count grid`: 가로 개수와 세로 개수로 균일 분할
+   - `Pixel size`: 타일의 가로/세로 픽셀 크기로 분할
+   - `Auto detect`: 여백과 경계를 감지해서 자동 분할
+   - `Model assisted`: 로컬 모델 보조 경계 감지 사용
+4. 필요한 경우 `Auto trim margins`와 `Model assist`를 켭니다.
+5. `Process`를 눌러 결과물을 저장합니다.
+
+저장되는 파일 이름은 원본 이미지 이름을 기준으로 숫자가 붙습니다.
+
+### 5. 스모크 QA 실행
+
+실제 이미지 저장 동작을 빠르게 확인하려면 아래 명령을 사용합니다.
+
+```powershell
+uv run --extra dev python scripts/run_smoke_qa.py --headless --output .omo\evidence\manual-smoke
+```
+
+결과 폴더에는 분할된 샘플 이미지와 `smoke-report.json`이 생성됩니다.
+
+### 6. 문제 해결
+
+- Docker Desktop 오류: Docker Desktop을 먼저 켠 뒤 `docker compose up -d ollama`를 다시 실행합니다.
+- GUI가 뜨지 않음: 실제 데스크톱 실행에서는 `QT_QPA_PLATFORM=offscreen`을 사용하지 않습니다.
+- 첫 모델 실행이 느림: `qwen2.5:1.5b-instruct` 모델을 미리 pull 합니다.
+- 자동 감지가 부족함: `Count grid` 또는 `Pixel size` 모드로 명시적으로 분할합니다.
+
+## Release Artifacts
+
+Release `v0.1.0` publishes native artifacts from GitHub Actions:
+
+- `ImageJakdu-0.1.0-windows.exe`
+- `ImageJakdu-0.1.0-windows-installer.exe`
+- `ImageJakdu-0.1.0-macos-app.zip`
+- `ImageJakdu-0.1.0-macos.dmg`
+
+The implementation plan is tracked in `.omo/plans/image-jakdu-image-splitter.md`.

@@ -8,13 +8,17 @@ dependencies = [
   "httpx2[http2,brotli,zstd]>=0.28.0",
   "Pillow>=10.4.0",
   "pydantic>=2.10.0",
+  "PySide6>=6.8.0",
   "typing-extensions>=4.12.0",
 ]
+
+[project.scripts]
+image-jakdu = "image_jakdu.__main__:main"
 
 [project.optional-dependencies]
 dev = [
   "basedpyright>=1.31.0",
-  "PySide6>=6.8.0",
+  "pyinstaller>=6.11.0",
   "pytest>=8.0.0",
   "pytest-qt>=4.4.0",
   "pyright>=1.1.407",
