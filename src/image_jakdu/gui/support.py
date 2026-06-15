@@ -4,6 +4,8 @@ from PySide6.QtWidgets import QFileDialog, QGroupBox, QHBoxLayout, QSpinBox, QWi
 
 from image_jakdu.domain import CountGridSettings, IntentJobDraft, ModeName, PixelSizeSettings
 
+SOURCE_IMAGE_FILTER = "Images (*.png *.jpg *.jpeg *.webp *.bmp *.tif *.tiff);;All files (*)"
+
 MODE_LABEL: dict[ModeName, str] = {
     "count_grid": "Count grid",
     "pixel_size": "Pixel size",
@@ -37,7 +39,7 @@ def default_source_picker(parent: QWidget) -> tuple[str, ...]:
         parent,
         "Select source images",
         "",
-        "Images (*.png *.jpg *.jpeg *.webp *.bmp);;All files (*)",
+        SOURCE_IMAGE_FILTER,
     )
     return tuple(files)
 

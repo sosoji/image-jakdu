@@ -2,11 +2,12 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from pathlib import Path
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Final
 
 from PIL import Image
 
 from image_jakdu.domain import CountGridSettings, ModeName, PixelSizeSettings
+from image_jakdu.image_bounds import bounds_for_request
 from image_jakdu.paths import OutputPlan, OutputPlanInput, build_output_plan
 from image_jakdu.splitters import ImageBounds, split_by_count_grid, split_by_pixel_size
 from image_jakdu.writer import (
@@ -21,6 +22,17 @@ if TYPE_CHECKING:
     from collections.abc import Callable
 
     from image_jakdu.gui.job import GuiProcessRequest
+
+IMAGE_FORMAT_BY_SUFFIX: Final[dict[str, str]] = {
+    ".jpg": "JPEG",
+    ".jpeg": "JPEG",
+    ".png": "PNG",
+    ".webp": "WEBP",
+    ".bmp": "BMP",
+    ".gif": "GIF",
+    ".tif": "TIFF",
+    ".tiff": "TIFF",
+}
 
 
 @dataclass(frozen=True, slots=True)
@@ -109,7 +121,11 @@ def _write_outputs(
 def _write_real_image_outputs(context: RealImageWriteContext) -> int:
     index = context.start_index
     with Image.open(context.source_path) as image:
-        bounds = ImageBounds(left=0, top=0, right=image.width, bottom=image.height)
+        bounds = bounds_for_request(
+            request=context.request,
+            image=image,
+            source_path=context.source_path,
+        )
         crops = _crop_boxes_for_request(request=context.request, bounds=bounds)
         for output_path, crop_box in zip(context.output_paths, crops, strict=True):
             if context.is_cancel_requested():
@@ -168,7 +184,11 @@ def _resolve_tile_count(*, request: GuiProcessRequest, source_path: Path) -> int
         return request.settings.columns * request.settings.rows
     if request.mode == "pixel_size" and source_path.exists():
         with Image.open(source_path) as image:
-            bounds = ImageBounds(left=0, top=0, right=image.width, bottom=image.height)
+            bounds = bounds_for_request(
+                request=request,
+                image=image,
+                source_path=source_path,
+            )
             return len(_crop_boxes_for_request(request=request, bounds=bounds))
     return 1
 
@@ -197,17 +217,4 @@ def _fake_image_payload(*, mode: ModeName, position: int) -> bytes:
 
 
 def _image_format_for_suffix(suffix: str) -> str:
-    normalized = suffix.lower()
-    match normalized:
-        case ".jpg" | ".jpeg":
-            return "JPEG"
-        case ".png":
-            return "PNG"
-        case ".webp":
-            return "WEBP"
-        case ".bmp":
-            return "BMP"
-        case ".gif":
-            return "GIF"
-        case _:
-            return "PNG"
+    return IMAGE_FORMAT_BY_SUFFIX.get(suffix.lower(), "PNG")

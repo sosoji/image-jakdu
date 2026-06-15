@@ -6,6 +6,7 @@ from PySide6.QtWidgets import QApplication, QWidget
 from pytestqt.qtbot import QtBot
 
 from image_jakdu.gui.main_window import ImageJakduWindow
+from image_jakdu.gui.support import SOURCE_IMAGE_FILTER
 
 INTENT_JSON: Final = (
     '{"mode":"count_grid","columns":4,"rows":3,"use_model_assist":true,"auto_trim_margins":true}'
@@ -92,6 +93,16 @@ def test_picker_actions_update_state_and_status(qtbot: QtBot) -> None:
     assert window.selected_output_folder == PureWindowsPath(r"C:\results\이미지 작두")
     assert window.status_label.text() == "Ready to process 2 image(s)."
     assert window.process_button.isEnabled()
+
+
+def test_source_picker_filter_includes_tiff_images() -> None:
+    assert "*.png" in SOURCE_IMAGE_FILTER
+    assert "*.jpg" in SOURCE_IMAGE_FILTER
+    assert "*.jpeg" in SOURCE_IMAGE_FILTER
+    assert "*.webp" in SOURCE_IMAGE_FILTER
+    assert "*.bmp" in SOURCE_IMAGE_FILTER
+    assert "*.tif" in SOURCE_IMAGE_FILTER
+    assert "*.tiff" in SOURCE_IMAGE_FILTER
 
 
 def test_intent_action_updates_preview_and_validation(qtbot: QtBot) -> None:
