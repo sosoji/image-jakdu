@@ -19,12 +19,14 @@ class WindowLayoutParts:
     auto_trim_checkbox: QWidget
     intent_text: QWidget
     intent_button: QWidget
+    ask_codex_button: QWidget
     validation_label: QLabel
     preview_label: QLabel
     progress_bar: QWidget
     status_label: QLabel
     process_button: QWidget
     cancel_button: QWidget
+    clear_button: QWidget
 
 
 def build_window_layout(window: QMainWindow, parts: WindowLayoutParts) -> None:
@@ -44,6 +46,7 @@ def build_window_layout(window: QMainWindow, parts: WindowLayoutParts) -> None:
     layout.addWidget(parts.auto_trim_checkbox)
     layout.addWidget(parts.intent_text)
     layout.addWidget(parts.intent_button)
+    layout.addWidget(parts.ask_codex_button)
     layout.addWidget(parts.validation_label)
     layout.addWidget(parts.preview_label)
     layout.addWidget(parts.progress_bar)
@@ -51,5 +54,6 @@ def build_window_layout(window: QMainWindow, parts: WindowLayoutParts) -> None:
     buttons = QHBoxLayout()
     buttons.addWidget(parts.process_button)
     buttons.addWidget(parts.cancel_button)
+    buttons.addWidget(parts.clear_button)
     layout.addLayout(buttons)
     window.setCentralWidget(root)

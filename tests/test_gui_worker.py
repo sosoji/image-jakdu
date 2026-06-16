@@ -72,6 +72,33 @@ def test_worker_progress_and_completion_updates_status(qtbot: QtBot, tmp_path: P
     assert len(processor.progress_events) == 3
 
 
+def test_clear_after_completion_resets_ready_state(qtbot: QtBot, tmp_path: Path) -> None:
+    _ = QApplication.instance() or QApplication([])
+
+    processor = ProgressCaptureProcessor(output_dir=tmp_path)
+    window = ImageJakduWindow(process=processor)
+    qtbot.addWidget(window)
+    window.show()
+
+    window.set_source_files((PureWindowsPath(r"C:\images\first.png"),))
+    window.set_output_folder(PureWindowsPath(str(tmp_path)))
+
+    window.process_button.click()
+    qtbot.waitUntil(lambda: window.status_label.text().startswith("Process complete"), timeout=2000)
+
+    window.clear_button.click()
+
+    assert window.selected_sources == ()
+    assert window.selected_output_folder is None
+    assert window.source_label.text() == "No images selected"
+    assert window.output_label.text() == "No output folder selected"
+    assert window.preview_label.text() == "No split preview yet."
+    assert window.progress_bar.value() == 0
+    assert window.status_label.text() == "Select images and an output folder."
+    assert not window.process_button.isEnabled()
+    assert not window.cancel_button.isEnabled()
+
+
 def test_default_gui_processor_saves_split_images(qtbot: QtBot, tmp_path: Path) -> None:
     _ = QApplication.instance() or QApplication([])
 

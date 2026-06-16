@@ -1,4 +1,5 @@
 from pathlib import PureWindowsPath
+from threading import Event
 from typing import Final
 
 from PySide6.QtCore import Qt
@@ -118,6 +119,50 @@ def test_intent_action_updates_preview_and_validation(qtbot: QtBot) -> None:
     assert window.rows_input.value() == 3
     assert window.status_label.text() == "Intent applied."
     assert "Count grid: 4 columns x 3 rows" in window.preview_label.text()
+
+
+def test_ask_codex_updates_preview_with_help(qtbot: QtBot) -> None:
+    _ = QApplication.instance() or QApplication([])
+    window = ImageJakduWindow(codex_help_provider=lambda _text: "Use Count grid for this sheet.")
+    qtbot.addWidget(window)
+    window.show()
+    window.intent_text.setPlainText("이미지를 어떻게 자를까?")
+
+    window.ask_codex_button.click()
+    qtbot.waitUntil(lambda: window.status_label.text() == "Codex help applied.", timeout=1000)
+
+    assert window.status_label.text() == "Codex help applied."
+    assert window.validation_label.text() == ""
+    assert window.preview_label.text() == "Codex: Use Count grid for this sheet."
+
+
+def test_ask_codex_runs_without_leaving_button_enabled(qtbot: QtBot) -> None:
+    _ = QApplication.instance() or QApplication([])
+    started = Event()
+    release = Event()
+
+    def blocking_provider(_text: str) -> str:
+        started.set()
+        if not release.wait(timeout=2.0):
+            msg = "provider was not released"
+            raise AssertionError(msg)
+        return "Use Pixel size."
+
+    window = ImageJakduWindow(codex_help_provider=blocking_provider)
+    qtbot.addWidget(window)
+    window.show()
+    window.intent_text.setPlainText("어떤 모드가 좋아?")
+
+    window.ask_codex_button.click()
+    qtbot.waitUntil(started.is_set, timeout=1000)
+
+    assert window.status_label.text() == "Asking Codex..."
+    assert not window.ask_codex_button.isEnabled()
+
+    release.set()
+    qtbot.waitUntil(lambda: window.status_label.text() == "Codex help applied.", timeout=1000)
+    assert window.ask_codex_button.isEnabled()
+    assert window.preview_label.text() == "Codex: Use Pixel size."
 
 
 def test_invalid_intent_sets_validation_message(qtbot: QtBot) -> None:
