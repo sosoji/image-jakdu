@@ -24,5 +24,5 @@ def test_windows_docs_include_runtime_model_and_packaging_paths() -> None:
 
     assert "docs/windows-setup.md" in readme
     assert "uv run --extra dev python" in readme
-    assert "ImageJakdu-0.1.1-windows-installer.exe" in readme
-    assert "ImageJakdu-0.1.1-macos.dmg" in readme
+    assert "ImageJakdu-0.1.2-windows-installer.exe" in readme
+    assert "ImageJakdu-0.1.2-macos.dmg" in readme

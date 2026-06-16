@@ -36,13 +36,13 @@ cd C:\path\to\image-jakdu
 
 필요한 도구:
 
-- 일반 사용자: `ImageJakdu-0.1.1-windows-installer.exe`만 실행하면 됩니다.
+- 일반 사용자: `ImageJakdu-0.1.2-windows-installer.exe`만 실행하면 됩니다.
 - Python 3.11 이상과 `uv`는 소스에서 개발할 때만 필요합니다.
 - Docker Desktop은 로컬 LLM 기능을 사용할 때만 필요합니다.
 
 ### 일반 설치
 
-GitHub Release에서 `ImageJakdu-0.1.1-windows-installer.exe`를 내려받아
+GitHub Release에서 `ImageJakdu-0.1.2-windows-installer.exe`를 내려받아
 실행합니다. 설치 중 Windows 관리자 권한 확인이 뜨면 승인하세요.
 
 설치 파일은 Image Jakdu와 Microsoft Visual C++ Runtime을 함께 설치하고,
@@ -115,11 +115,11 @@ uv run --extra dev python scripts/run_smoke_qa.py --headless --output .omo\evide
 
 ## Release Artifacts
 
-Release `v0.1.1` publishes native artifacts from GitHub Actions:
+Release `v0.1.2` publishes native artifacts from GitHub Actions:
 
-- `ImageJakdu-0.1.1-windows.exe`
-- `ImageJakdu-0.1.1-windows-installer.exe`
-- `ImageJakdu-0.1.1-macos-app.zip`
-- `ImageJakdu-0.1.1-macos.dmg`
+- `ImageJakdu-0.1.2-windows.exe`
+- `ImageJakdu-0.1.2-windows-installer.exe`
+- `ImageJakdu-0.1.2-macos-app.zip`
+- `ImageJakdu-0.1.2-macos.dmg`
 
 The implementation plan is tracked in `.omo/plans/image-jakdu-image-splitter.md`.

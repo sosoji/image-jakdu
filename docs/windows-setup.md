@@ -6,7 +6,7 @@ Ordinary processing stays local and must not call cloud AI services.
 ## Prerequisites
 
 - Windows 10 or Windows 11
-- For normal users: download and run `ImageJakdu-0.1.1-windows-installer.exe`
+- For normal users: download and run `ImageJakdu-0.1.2-windows-installer.exe`
 - The installer includes the app and installs the Microsoft Visual C++ Runtime
 - Python 3.11+ and `uv` are only needed for development from source
 - Docker Desktop is only needed for the optional local Ollama intent model
@@ -16,7 +16,7 @@ Ordinary processing stays local and must not call cloud AI services.
 
 For ordinary Windows use, install from the GitHub release:
 
-1. Download `ImageJakdu-0.1.1-windows-installer.exe`.
+1. Download `ImageJakdu-0.1.2-windows-installer.exe`.
 2. Run it and approve the Windows administrator prompt.
 3. Launch Image Jakdu from the Start Menu or Desktop shortcut.
 

@@ -1,6 +1,6 @@
 Unicode true
 Name "Image Jakdu"
-OutFile "..\..\dist\ImageJakdu-0.1.1-windows-installer.exe"
+OutFile "..\..\dist\ImageJakdu-0.1.2-windows-installer.exe"
 InstallDir "$PROGRAMFILES64\ImageJakdu"
 RequestExecutionLevel admin
 !define SOURCE_EXE "..\..\dist\ImageJakdu.exe"

@@ -32,9 +32,9 @@ def test_release_workflow_builds_windows_installer_and_macos_dmg() -> None:
     assert "runs-on: windows-latest" in workflow
     assert "build-macos:" in workflow
     assert "runs-on: macos-latest" in workflow
-    assert "ImageJakdu-0.1.1-windows.exe" in workflow
-    assert "ImageJakdu-0.1.1-windows-installer.exe" in workflow
-    assert "ImageJakdu-0.1.1-macos.dmg" in workflow
+    assert "ImageJakdu-0.1.2-windows.exe" in workflow
+    assert "ImageJakdu-0.1.2-windows-installer.exe" in workflow
+    assert "ImageJakdu-0.1.2-macos.dmg" in workflow
 
 
 def test_windows_installer_script_packages_pyinstaller_exe() -> None:
@@ -45,7 +45,7 @@ def test_windows_installer_script_packages_pyinstaller_exe() -> None:
     installer = installer_path.read_text(encoding="utf-8")
 
     # Then: it installs the PyInstaller executable and creates shortcuts.
-    assert 'OutFile "..\\..\\dist\\ImageJakdu-0.1.1-windows-installer.exe"' in installer
+    assert 'OutFile "..\\..\\dist\\ImageJakdu-0.1.2-windows-installer.exe"' in installer
     assert '!define SOURCE_EXE "..\\..\\dist\\ImageJakdu.exe"' in installer
     assert 'File "${SOURCE_EXE}"' in installer
     assert "CreateShortCut" in installer

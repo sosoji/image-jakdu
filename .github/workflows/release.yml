@@ -25,7 +25,7 @@ jobs:
         shell: powershell
         run: |
           uv run --extra dev pyinstaller --noconfirm --clean --windowed --onefile --name ImageJakdu src/image_jakdu/__main__.py
-          Copy-Item dist\ImageJakdu.exe dist\ImageJakdu-0.1.1-windows.exe
+          Copy-Item dist\ImageJakdu.exe dist\ImageJakdu-0.1.2-windows.exe
       - name: Build Windows installer
         shell: powershell
         run: |
@@ -37,14 +37,14 @@ jobs:
         with:
           name: image-jakdu-windows
           path: |
-            dist/ImageJakdu-0.1.1-windows.exe
-            dist/ImageJakdu-0.1.1-windows-installer.exe
+            dist/ImageJakdu-0.1.2-windows.exe
+            dist/ImageJakdu-0.1.2-windows-installer.exe
       - uses: softprops/action-gh-release@v2
         if: startsWith(github.ref, 'refs/tags/')
         with:
           files: |
-            dist/ImageJakdu-0.1.1-windows.exe
-            dist/ImageJakdu-0.1.1-windows-installer.exe
+            dist/ImageJakdu-0.1.2-windows.exe
+            dist/ImageJakdu-0.1.2-windows-installer.exe
 
   build-macos:
     runs-on: macos-latest
@@ -57,17 +57,17 @@ jobs:
       - name: Build macOS app
         run: |
           uv run --extra dev pyinstaller --noconfirm --clean --windowed --name ImageJakdu src/image_jakdu/__main__.py
-          ditto -c -k --sequesterRsrc --keepParent dist/ImageJakdu.app dist/ImageJakdu-0.1.1-macos-app.zip
-          hdiutil create -volname ImageJakdu -srcfolder dist/ImageJakdu.app -ov -format UDZO dist/ImageJakdu-0.1.1-macos.dmg
+          ditto -c -k --sequesterRsrc --keepParent dist/ImageJakdu.app dist/ImageJakdu-0.1.2-macos-app.zip
+          hdiutil create -volname ImageJakdu -srcfolder dist/ImageJakdu.app -ov -format UDZO dist/ImageJakdu-0.1.2-macos.dmg
       - uses: actions/upload-artifact@v4
         with:
           name: image-jakdu-macos
           path: |
-            dist/ImageJakdu-0.1.1-macos-app.zip
-            dist/ImageJakdu-0.1.1-macos.dmg
+            dist/ImageJakdu-0.1.2-macos-app.zip
+            dist/ImageJakdu-0.1.2-macos.dmg
       - uses: softprops/action-gh-release@v2
         if: startsWith(github.ref, 'refs/tags/')
         with:
           files: |
-            dist/ImageJakdu-0.1.1-macos-app.zip
-            dist/ImageJakdu-0.1.1-macos.dmg
+            dist/ImageJakdu-0.1.2-macos-app.zip
+            dist/ImageJakdu-0.1.2-macos.dmg

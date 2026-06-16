@@ -292,7 +292,7 @@ wheels = [
 
 [[package]]
 name = "image-jakdu"
-version = "0.1.1"
+version = "0.1.2"
 source = { editable = "." }
 dependencies = [
     { name = "httpx2", extra = ["brotli", "http2", "zstd"] },
